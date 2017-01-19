@@ -1,0 +1,2 @@
+# mikutter_osc_timetable
+mikutterでOSCのタイムテーブルが取れるといいなぁ
