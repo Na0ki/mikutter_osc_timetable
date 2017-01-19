@@ -1,0 +1,9 @@
+---
+slug: :osc_timetable
+depends:
+  mikutter: 3.5.0
+  plugin: []
+version: '0.0.1'
+author: ahiru
+name: osc_timetable
+description: OSCのタイムテーブルがみれるといいな
