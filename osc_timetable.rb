@@ -6,16 +6,6 @@ require 'pp'
 require_relative 'model'
 
 Plugin.create(:osc_timetable) do
-  # Plugin::OSCTimetable::OpenSourceConference['https://www.ospn.jp/osc2017-osaka/'].next { |osc|
-  #   osc.timetables.next{|timetables|
-  #     timetables.each do |tt|
-  #       tt.lectures.next{|lecture|
-  #         pp lecture
-  #       }.trap{|err| error err }
-  #     end
-  #   }
-  # }.trap{|err| error err }
-
   command(:osc,
           name: 'OSC',
           condition: lambda{ |opt| true },
@@ -42,6 +32,18 @@ Plugin.create(:osc_timetable) do
     osc.timetables.next{|tts|
       timeline(:"osc_#{osc.idname}_timetables") << tts
     }.trap{|err| error err }
+  end
+
+  intent Plugin::OSCTimetable::Timetable, label: 'OSCタイムテーブル' do |intent_token|
+    timetable = intent_token.model
+    tab(:"osc_lectures_#{timetable.uri}", timetable.title) do
+      temporary_tab
+      set_deletable true
+      timeline :"osc_lectures_#{timetable.uri}"
+    end
+    timetable.lectures.next{|lectures|
+      timeline(:"osc_lectures_#{timetable.uri}") << lectures
+    }
   end
 end
 

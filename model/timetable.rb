@@ -8,6 +8,8 @@ module Plugin::OSCTimetable
     include Plugin::OSCTimetable::ScrapeMixin
     include Retriever::Model::MessageMixin
 
+    register :osc_timetable, name: "タイムテーブル"
+
     field.int :id
     field.string :title
     field.uri :perma_link
@@ -46,7 +48,7 @@ module Plugin::OSCTimetable
       places = table.css('tr').first.css('th').map { |th| th.text.gsub(/(\s|　)+/, '') }
       table.css('tr').first.remove
 
-      table.css('tr').map do |lec|
+      table.css('tr').map {|lec|
         period = lec.css('th').text.gsub(/(\s|　)+/, '').match(/(?<start_hour>\d{1,2}):(?<start_min>\d{1,2})\-(?<end_hour>\d{1,2}):(?<end_min>\d{1,2})/)
 
         lec.css('td').reject{|l|
@@ -62,12 +64,13 @@ module Plugin::OSCTimetable
                                                       belonging: belonging)
           Plugin::OSCTimetable::Lecture.new(id: id,
                                             title: title,
-                                            teacher: [teacher],
+                                            teachers: [teacher],
+                                            timetable: self,
                                             perma_link: link,
                                             start: lecture_time(schedule.start, period['start_hour'], period['start_min']),
                                             end: lecture_time(schedule.end, period['end_hour'], period['end_min']))
         end
-      end
+      }.flatten
     end
 
     def lecture_time(time, hour, min)
