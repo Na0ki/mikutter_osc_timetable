@@ -35,7 +35,7 @@ module Plugin::OSCTimetable
     end
 
     def idname
-      ''
+      perma_link.path.gsub('/', '')
     end
 
     def name

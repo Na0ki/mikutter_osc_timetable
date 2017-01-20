@@ -32,9 +32,16 @@ Plugin.create(:osc_timetable) do
     }
   end
 
-  # intent Plugin::OSCTimetable::OpenSourceConference, label: 'OSC' do |intent_token|
-  #   intent_token.model
-    
-  # end
+  intent Plugin::OSCTimetable::OpenSourceConference, label: 'OSC' do |intent_token|
+    osc = intent_token.model
+    tab(:"osc_#{osc.idname}", osc.name) do
+      temporary_tab
+      set_deletable true
+      timeline(:"osc_#{osc.idname}_timetables")
+    end
+    osc.timetables.next{|tts|
+      timeline(:"osc_#{osc.idname}_timetables") << tts
+    }.trap{|err| error err }
+  end
 end
 

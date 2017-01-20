@@ -6,6 +6,7 @@ require_relative 'scrape_mixin'
 module Plugin::OSCTimetable
   class Timetable < Retriever::Model
     include Plugin::OSCTimetable::ScrapeMixin
+    include Retriever::Model::MessageMixin
 
     field.int :id
     field.string :title
@@ -20,6 +21,18 @@ module Plugin::OSCTimetable
 
     def schedule
       osc.schedules[id - 1]
+    end
+
+    def user
+      osc
+    end
+
+    def description
+      title
+    end
+
+    def created
+      schedule.start
     end
 
     def inspect
