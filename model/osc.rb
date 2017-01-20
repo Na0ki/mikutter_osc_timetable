@@ -6,6 +6,7 @@ require_relative 'scrape_mixin'
 module Plugin::OSCTimetable
   class OpenSourceConference < Retriever::Model
     include Retriever::Model::MessageMixin
+    include Retriever::Model::UserMixin
     include Plugin::OSCTimetable::ScrapeMixin
 
     register :osc_timetable_osc, name: "OSC"
@@ -15,7 +16,7 @@ module Plugin::OSCTimetable
 
     def self.[](url)
       osc = Plugin::OSCTimetable::OpenSourceConference.new(perma_link: url,
-                                          title: 'OSC')
+                                                           title: 'OSC')
       Delayer::Deferred.new.next{
         osc.dom.next{|doc|
           current_field = nil
@@ -31,6 +32,26 @@ module Plugin::OSCTimetable
       }.next{
         osc
       }
+    end
+
+    def idname
+      ''
+    end
+
+    def name
+      title
+    end
+
+    def description
+      "#{self[:日程]}\n#{self[:会場]}"
+    end
+
+    def created
+      schedules.first.start
+    end
+
+    def icon
+      Plugin.filtering(:photo_filter, 'https://www.ospn.jp/favicon.ico', [])[1].first
     end
 
     def schedules
