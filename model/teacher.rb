@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-module Plugin::OSC_TimeTable
+module Plugin::OSCTimetable
   class Teacher < Retriever::Model
 
     field.string :name

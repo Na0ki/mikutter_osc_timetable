@@ -6,7 +6,7 @@ module Plugin::OSC_TimeTable
 
     field.string :id
     field.string :title
-    field.has :lecture, [Plugin::OSC_TimeTable::Lecture]
+    field.has :lecture, [Plugin::OSCTimetable::Lecture]
     field.uri :url
 
   end

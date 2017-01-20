@@ -30,20 +30,20 @@ Plugin.create(:osc_timetable) do
           belonging = l.text.split(/\r/)[0].gsub(/.*担当：/, '')
           t_name = l.text.split(/\r/)[1].gsub(/^講師：/, '')
 
-          teacher = Plugin::OSC_TimeTable::Teacher.new(:name => t_name,
-                                                       :belonging => belonging)
-          lectures << Plugin::OSC_TimeTable::Lecture.new(:id => id,
-                                                         :title => title,
-                                                         :teacher => teacher,
-                                                         :url => link,
-                                                         :start => start_time,
-                                                         :end => end_time)
+          teacher = Plugin::OSCTimetable::Teacher.new(:name => t_name,
+                                                      :belonging => belonging)
+          lectures << Plugin::OSCTimetable::Lecture.new(:id => id,
+                                                        :title => title,
+                                                        :teacher => teacher,
+                                                        :url => link,
+                                                        :start => start_time,
+                                                        :end => end_time)
         end
       end
 
-      Plugin::OSC_TimeTable::TimeTable.new(:title => table_title,
-                                           :lecture => lectures,
-                                           :url => '')
+      Plugin::OSCTimetable::TimeTable.new(:title => table_title,
+                                          :lecture => lectures,
+                                          :url => '')
     }
   end
 
