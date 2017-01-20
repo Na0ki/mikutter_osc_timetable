@@ -16,6 +16,7 @@ Plugin.create(:osc_timetable) do
       temporary_tab
       set_deletable true
       timeline :osc_list
+      active!
     end
     Plugin::OSCTimetable::OpenSourceConference['https://www.ospn.jp/osc2017-osaka/'].next{|osc|
       timeline(:osc_list) << osc
@@ -24,26 +25,38 @@ Plugin.create(:osc_timetable) do
 
   intent Plugin::OSCTimetable::OpenSourceConference, label: 'OSC' do |intent_token|
     osc = intent_token.model
-    tab(:"osc_#{osc.idname}", osc.name) do
-      temporary_tab
-      set_deletable true
-      timeline(:"osc_#{osc.idname}_timetables")
+    tab_slug = :"osc_#{osc.idname}"
+    if Plugin::GUI::Tab.exist?(tab_slug)
+      Plugin::GUI::Tab.instance(tab_slug).active!
+    else
+      tab(tab_slug, osc.name) do
+        temporary_tab
+        set_deletable true
+        timeline(:"osc_#{osc.idname}_timetables")
+        active!
+      end
+      osc.timetables.next{|tts|
+        timeline(:"osc_#{osc.idname}_timetables") << tts
+      }.trap{|err| error err }
     end
-    osc.timetables.next{|tts|
-      timeline(:"osc_#{osc.idname}_timetables") << tts
-    }.trap{|err| error err }
   end
 
   intent Plugin::OSCTimetable::Timetable, label: 'OSCタイムテーブル' do |intent_token|
     timetable = intent_token.model
-    tab(:"osc_lectures_#{timetable.uri}", timetable.title) do
-      temporary_tab
-      set_deletable true
-      timeline :"osc_lectures_#{timetable.uri}"
+    tab_slug = :"osc_lectures_#{timetable.uri}"
+    if Plugin::GUI::Tab.exist?(tab_slug)
+      Plugin::GUI::Tab.instance(tab_slug).active!
+    else
+      tab(tab_slug, timetable.title) do
+        temporary_tab
+        set_deletable true
+        timeline :"osc_lectures_#{timetable.uri}"
+        active!
+      end
+      timetable.lectures.next{|lectures|
+        timeline(:"osc_lectures_#{timetable.uri}") << lectures
+      }
     end
-    timetable.lectures.next{|lectures|
-      timeline(:"osc_lectures_#{timetable.uri}") << lectures
-    }
   end
 end
 
