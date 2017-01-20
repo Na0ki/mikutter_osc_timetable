@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 require_relative 'lecture'
 
-module Plugin::OSC_TimeTable
-  class TimeTable < Retriever::Model
+module Plugin::OSCTimetable
+  class Timetable < Retriever::Model
 
     field.string :id
     field.string :title
     field.has :lecture, [Plugin::OSCTimetable::Lecture]
-    field.uri :url
-
+    field.uri :perma_link
   end
 end

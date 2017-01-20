@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 require 'httpclient'
 require 'nokogiri'
+require 'pp'
 
 require_relative 'model'
 
@@ -41,7 +42,7 @@ Plugin.create(:osc_timetable) do
         end
       end
 
-      Plugin::OSCTimetable::TimeTable.new(:title => table_title,
+      Plugin::OSCTimetable::Timetable.new(:title => table_title,
                                           :lecture => lectures,
                                           :url => '')
     }
@@ -62,12 +63,8 @@ Plugin.create(:osc_timetable) do
     }
   end
 
-
-  on_get_osc_timetable do |year, place, part|
-    timetable(year, place, part).next { |table|
-      p table
-    }.trap { |e| error e }
-  end
-
+  Plugin::OSCTimetable::OSC['https://www.ospn.jp/osc2017-osaka/'].timetables.next{|timetables|
+    pp timetables
+  }
 end
 
