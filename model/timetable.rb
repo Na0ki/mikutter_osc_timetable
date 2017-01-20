@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 require_relative 'lecture'
+require_relative 'osc'
 require_relative 'scrape_mixin'
 
 module Plugin::OSCTimetable
   class Timetable < Retriever::Model
     include Plugin::OSCTimetable::ScrapeMixin
 
-    field.string :id
+    field.int :id
     field.string :title
     field.uri :perma_link
+    field.has :osc, Plugin::OSCTimetable::OpenSourceConference
 
     def lectures
       dom.next do |doc|
@@ -16,8 +18,12 @@ module Plugin::OSCTimetable
       end
     end
 
+    def schedule
+      osc.schedules[id - 1]
+    end
+
     def inspect
-      "#<#{self.class}: #{title}>"
+      "#<#{self.class}: #{title} #{schedule.inspect}>"
     end
 
     private
@@ -28,9 +34,7 @@ module Plugin::OSCTimetable
       table.css('tr').first.remove
 
       table.css('tr').map do |lec|
-        period = lec.css('th').text.gsub(/(\s|　)+/, '')
-        start_time = period.gsub(/-[0-9:]+/, '')
-        end_time = period.gsub(/[0-9:]+-/, '')
+        period = lec.css('th').text.gsub(/(\s|　)+/, '').match(/(?<start_hour>\d{1,2}):(?<start_min>\d{1,2})\-(?<end_hour>\d{1,2}):(?<end_min>\d{1,2})/)
 
         lec.css('td').reject{|l|
           l.css('a').first.to_s.empty?
@@ -47,10 +51,14 @@ module Plugin::OSCTimetable
                                             title: title,
                                             teacher: [teacher],
                                             perma_link: link,
-                                            start: start_time,
-                                            end: end_time)
+                                            start: lecture_time(schedule.start, period['start_hour'], period['start_min']),
+                                            end: lecture_time(schedule.end, period['end_hour'], period['end_min']))
         end
       end
+    end
+
+    def lecture_time(time, hour, min)
+      Time.new(time.year, time.month, time.day, hour, min, time.sec, time.utc_offset)
     end
 
   end

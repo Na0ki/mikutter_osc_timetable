@@ -8,11 +8,11 @@ module Plugin::OSCTimetable
     field.string :title
     field.has :teacher, [Plugin::OSCTimetable::Teacher]
     field.uri :perma_link
-    field.string :start
-    field.string :end
+    field.time :start
+    field.time :end
 
     def inspect
-      "#<#{self.class}: #{title}>"
+      "#<#{self.class}: #{title} #{start}>"
     end
 
   end

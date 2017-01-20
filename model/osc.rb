@@ -4,7 +4,7 @@ require_relative 'schedule'
 require_relative 'scrape_mixin'
 
 module Plugin::OSCTimetable
-  class OSC < Retriever::Model
+  class OpenSourceConference < Retriever::Model
     include Retriever::Model::MessageMixin
     include Plugin::OSCTimetable::ScrapeMixin
 
@@ -14,7 +14,7 @@ module Plugin::OSCTimetable
     field.string :title, required: true
 
     def self.[](url)
-      osc = Plugin::OSCTimetable::OSC.new(perma_link: url,
+      osc = Plugin::OSCTimetable::OpenSourceConference.new(perma_link: url,
                                           title: 'OSC')
       Delayer::Deferred.new.next{
         osc.dom.next{|doc|
@@ -33,7 +33,7 @@ module Plugin::OSCTimetable
       }
     end
 
-    def schedule
+    def schedules
       self[:日程].select{|element|
         element.name == 'text'
       }.map{|element|
@@ -62,7 +62,8 @@ module Plugin::OSCTimetable
         }.map{|url|
           Plugin::OSCTimetable::Timetable.new(id: url.query_values['id'],
                                               title: "#{url.query_values['id']}日目",
-                                              perma_link: url)
+                                              perma_link: url,
+                                              osc: self)
         }
       }
     end

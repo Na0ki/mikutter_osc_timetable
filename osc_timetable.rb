@@ -6,7 +6,7 @@ require 'pp'
 require_relative 'model'
 
 Plugin.create(:osc_timetable) do
-  Plugin::OSCTimetable::OSC['https://www.ospn.jp/osc2017-osaka/'].next { |osc|
+  Plugin::OSCTimetable::OpenSourceConference['https://www.ospn.jp/osc2017-osaka/'].next { |osc|
     osc.timetables.next{|timetables|
       timetables.each do |tt|
         tt.lectures.next{|lecture|
