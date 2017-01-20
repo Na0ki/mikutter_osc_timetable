@@ -5,7 +5,7 @@ module Plugin::OSCTimetable
     def dom
       html.next do |response|
         charset = response.body_encoding.name
-        Nokogiri::HTML.parse(response.content, nil, charset)
+        Nokogiri::HTML.parse(response.content, nil, response.body_encoding.name)
       end
     end
 

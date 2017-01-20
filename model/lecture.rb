@@ -7,7 +7,7 @@ module Plugin::OSCTimetable
     field.string :id
     field.string :title
     field.has :teacher, [Plugin::OSCTimetable::Teacher]
-    field.uri :url
+    field.uri :perma_link
     field.string :start
     field.string :end
 
