@@ -11,5 +11,9 @@ module Plugin::OSCTimetable
     field.string :start
     field.string :end
 
+    def inspect
+      "#<#{self.class}: #{title}>"
+    end
+
   end
 end

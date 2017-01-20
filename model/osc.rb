@@ -33,5 +33,9 @@ module Plugin::OSCTimetable
         }
       }
     end
+
+    def inspect
+      "#<#{self.class}: #{title}>"
+    end
   end
 end

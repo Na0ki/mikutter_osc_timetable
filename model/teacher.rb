@@ -6,5 +6,9 @@ module Plugin::OSCTimetable
     field.string :name
     field.string :belonging
 
+    def inspect
+      "#<#{self.class}: #{name} (#{belonging})>"
+    end
+
   end
 end
