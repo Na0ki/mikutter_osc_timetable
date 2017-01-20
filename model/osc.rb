@@ -14,6 +14,10 @@ module Plugin::OSCTimetable
     field.uri :perma_link, required: true
     field.string :title, required: true
 
+    handle %r<https://www.ospn.jp/(.+?)/> do |uri|
+      Plugin::OSCTimetable::OpenSourceConference[uri]
+    end
+
     def self.[](url)
       osc = Plugin::OSCTimetable::OpenSourceConference.new(perma_link: url,
                                                            title: 'OSC')
