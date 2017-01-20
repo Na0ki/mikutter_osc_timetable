@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
+require_relative 'timetable'
+require_relative 'scrape_mixin'
 
 module Plugin::OSCTimetable
   class OSC < Retriever::Model
     include Retriever::Model::MessageMixin
-    include Retriever::Model::UserMixin
+    include Plugin::OSCTimetable::ScrapeMixin
 
     register :osc_timetable_osc, name: "OSC"
 
@@ -30,24 +32,6 @@ module Plugin::OSCTimetable
                                               perma_link: url)
         }
       }
-    end
-
-    def dom
-      html.next do |response|
-        charset = response.body_encoding.name
-        Nokogiri::HTML.parse(response.content, nil, charset)
-      end
-    end
-
-    def html
-      Thread.new { html! }
-    end
-
-    private
-
-    memoize def html!
-      client = HTTPClient.new
-      client.get(perma_link)
     end
   end
 end
