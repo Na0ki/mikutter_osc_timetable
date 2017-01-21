@@ -32,6 +32,7 @@ Plugin.create(:osc_timetable) do
       tab(tab_slug, osc.name) do
         temporary_tab
         set_deletable true
+        set_icon osc.user.icon
         timeline(:"osc_#{osc.idname}_timetables")
         active!
       end
@@ -50,6 +51,7 @@ Plugin.create(:osc_timetable) do
       tab(tab_slug, timetable.title) do
         temporary_tab
         set_deletable true
+        set_icon timetable.user.icon
         timeline :"osc_lectures_#{timetable.uri}"
         active!
       end
