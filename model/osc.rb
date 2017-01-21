@@ -9,7 +9,7 @@ module Plugin::OSCTimetable
     include Retriever::Model::UserMixin
     include Plugin::OSCTimetable::ScrapeMixin
 
-    register :osc_timetable_osc, name: "OSC"
+    register :osc_timetable_osc, name: 'OSC'
 
     field.uri :perma_link, required: true
     field.string :title, required: true
@@ -21,19 +21,19 @@ module Plugin::OSCTimetable
     def self.[](url)
       osc = Plugin::OSCTimetable::OpenSourceConference.new(perma_link: url,
                                                            title: 'OSC')
-      Delayer::Deferred.new.next{
-        osc.dom.next{|doc|
+      Delayer::Deferred.new.next {
+        osc.dom.next { |doc|
           current_field = nil
           doc.css('#centerLcolumn .blockContent').first.children.each do |element|
             case element.name
-            when 'strong'
-              current_field = element.text
-            else
-              osc[current_field] = [*osc[current_field], element] if current_field
+              when 'strong'
+                current_field = element.text
+              else
+                osc[current_field] = [*osc[current_field], element] if current_field
             end
           end
         }
-      }.next{
+      }.next {
         osc
       }
     end
@@ -59,11 +59,11 @@ module Plugin::OSCTimetable
     end
 
     def schedules
-      self[:日程].select{|element|
+      self[:日程].select { |element|
         element.name == 'text'
-      }.map{|element|
+      }.map { |element|
         element.text.match(/(?:(?<year>\d{4})年)?\s*(?<month>\d+)月\s*(?<day>\d+)日\s*\((?<wod>.)\)\s*(?<start_hour>\d{1,2}):(?<start_min>\d{1,2}).(?<end_hour>\d{1,2}):(?<end_min>\d{1,2})/)
-      }.to_a.compact.inject([]){|schedules, matched|
+      }.to_a.compact.inject([]) { |schedules, matched|
         [*schedules,
          Plugin::OSCTimetable::Schedule.new(start: Time.new(matched['year'] || schedules.first.start.year || Time.now.year,
                                                             matched['month'],
@@ -79,12 +79,12 @@ module Plugin::OSCTimetable
     end
 
     def timetables
-      dom.next{|doc|
-        doc.css('#mainmenu .menuMain').map{|cell|
+      dom.next { |doc|
+        doc.css('#mainmenu .menuMain').map { |cell|
           Addressable::URI.parse(cell[:href])
-        }.select{ |url|
+        }.select { |url|
           %r<eventrsv>.match(url.path)
-        }.map{|url|
+        }.map { |url|
           Plugin::OSCTimetable::Timetable.new(id: url.query_values['id'],
                                               title: "#{url.query_values['id']}日目",
                                               perma_link: url,

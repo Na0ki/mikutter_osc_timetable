@@ -10,11 +10,12 @@ module Plugin::OSCTimetable
     field.string :title
     field.has :teachers, [Plugin::OSCTimetable::Teacher], required: true
     field.uri :perma_link
-    field.has :timetable, Plugin::OSCTimetable::Timetable
+    field.has :timetable, Plugin::OSCTimetable::Timetable, required: true
     field.time :start
     field.time :end
 
     def user
+      pp teachers
       (teachers || []).first || timetable.user
     end
 

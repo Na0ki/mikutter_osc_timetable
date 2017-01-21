@@ -12,7 +12,7 @@ module Plugin::OSCTimetable
     end
 
     def idname
-      ''
+      belonging
     end
 
     def inspect

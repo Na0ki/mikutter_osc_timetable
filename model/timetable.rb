@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-require_relative 'lecture'
 require_relative 'osc'
 require_relative 'scrape_mixin'
 
@@ -8,7 +7,7 @@ module Plugin::OSCTimetable
     include Plugin::OSCTimetable::ScrapeMixin
     include Retriever::Model::MessageMixin
 
-    register :osc_timetable, name: "タイムテーブル"
+    register :osc_timetable, name: 'タイムテーブル'
 
     field.int :id
     field.string :title
@@ -48,10 +47,10 @@ module Plugin::OSCTimetable
       places = table.css('tr').first.css('th').map { |th| th.text.gsub(/(\s|　)+/, '') }
       table.css('tr').first.remove
 
-      table.css('tr').map {|lec|
-        period = lec.css('th').text.gsub(/(\s|　)+/, '').match(/(?<start_hour>\d{1,2}):(?<start_min>\d{1,2})\-(?<end_hour>\d{1,2}):(?<end_min>\d{1,2})/)
+      table.css('tr').map { |lec|
+        period = lec.css('th').text.gsub(/(\s|　)+/, '').match(/(?<start_hour>\d{1,2}):(?<start_min>\d{1,2})-(?<end_hour>\d{1,2}):(?<end_min>\d{1,2})/)
 
-        lec.css('td').reject{|l|
+        lec.css('td').reject { |l|
           l.css('a').first.to_s.empty?
         }.map do |l|
           link = l.css('a').first[:href]

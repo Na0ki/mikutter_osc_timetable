@@ -8,17 +8,17 @@ require_relative 'model'
 Plugin.create(:osc_timetable) do
   command(:osc,
           name: 'OSC',
-          condition: lambda{ |opt| true },
+          condition: lambda { |_| true },
           visible: true,
           icon: get_skin('osc.gif'),
-          role: :window) do |opt|
-    tab(:osc, "OSC") do
+          role: :window) do |_|
+    tab(:osc, 'OSC') do
       temporary_tab
       set_deletable true
       timeline :osc_list
       active!
     end
-    Plugin::OSCTimetable::OpenSourceConference['https://www.ospn.jp/osc2017-osaka/'].next{|osc|
+    Plugin::OSCTimetable::OpenSourceConference['https://www.ospn.jp/osc2017-osaka/'].next { |osc|
       timeline(:osc_list) << osc
     }
   end
@@ -35,9 +35,9 @@ Plugin.create(:osc_timetable) do
         timeline(:"osc_#{osc.idname}_timetables")
         active!
       end
-      osc.timetables.next{|tts|
+      osc.timetables.next { |tts|
         timeline(:"osc_#{osc.idname}_timetables") << tts
-      }.trap{|err| error err }
+      }.trap { |err| error err }
     end
   end
 
@@ -53,7 +53,7 @@ Plugin.create(:osc_timetable) do
         timeline :"osc_lectures_#{timetable.uri}"
         active!
       end
-      timetable.lectures.next{|lectures|
+      timetable.lectures.next { |lectures|
         timeline(:"osc_lectures_#{timetable.uri}") << lectures
       }
     end
