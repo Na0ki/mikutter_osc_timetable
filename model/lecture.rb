@@ -15,7 +15,7 @@ module Plugin::OSCTimetable
     field.time :end
 
     def user
-      (self[:teachers] || []).first || timetable.user
+      (teachers || []).first || timetable.user
     end
 
     def description

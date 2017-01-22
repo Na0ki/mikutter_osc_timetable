@@ -21,8 +21,8 @@ module Plugin::OSCTimetable
     def self.[](url)
       osc = Plugin::OSCTimetable::OpenSourceConference.new(perma_link: url,
                                                            title: 'OSC')
-      Delayer::Deferred.new.next{
-        osc.dom.next{|doc|
+      Delayer::Deferred.new.next {
+        osc.dom.next { |doc|
           osc.title = doc.css('title').text
 
           current_field = nil
