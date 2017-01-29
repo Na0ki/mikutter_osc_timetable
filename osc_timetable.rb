@@ -2,6 +2,7 @@
 require 'httpclient'
 require 'nokogiri'
 require 'pp'
+require 'rss'
 
 require_relative 'model'
 
@@ -18,8 +19,20 @@ Plugin.create(:osc_timetable) do
       timeline :osc_list
       active!
     end
-    Plugin::OSCTimetable::OpenSourceConference['https://www.ospn.jp/osc2017-osaka/'].next { |osc|
-      timeline(:osc_list) << osc
+    Thread.new{
+      open("http://kokuda.org/service/rss/osclink/").read
+    }.next{|doc|
+      RSS::Parser.parse(doc)
+    }.next{|rss|
+      rss.items.each do |item|
+        Plugin::OSCTimetable::OpenSourceConference[item.link].next { |osc|
+          timeline(:osc_list) << osc
+        }.trap{|err|
+          error err
+        }
+      end
+    }.trap{|err|
+      error err
     }
   end
 

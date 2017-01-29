@@ -49,11 +49,15 @@ module Plugin::OSCTimetable
     end
 
     def description
-      "#{self[:日程]}\n#{self[:会場]}"
+      title
     end
 
     def created
-      schedules.first.start
+      if self[:日程]
+        schedules.first.start
+      else
+        Time.new(9999, 12, 31)
+      end
     end
 
     def icon

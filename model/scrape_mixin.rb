@@ -16,7 +16,7 @@ module Plugin::OSCTimetable
 
     memoize def html!
       client = HTTPClient.new
-      client.get(perma_link)
+      client.get(perma_link, follow_redirect: true)
     end
   end
 end
