@@ -57,7 +57,7 @@ module Plugin::OSCTimetable
           id = link.match(/[\w\-]+\?eid=([0-9]).*/)
           title = l.css('a').first.text
           belonging = l.text.split(/\r/)[0].gsub(/.*担当：/, '')
-          t_name = l.text.split(/\r/)[1].gsub(/^講師：/, '')
+          t_name = (l.text.split(/\r/)[1].gsub(/^講師：/, '') rescue '(エラー)')
 
           teacher = Plugin::OSCTimetable::Teacher.new(name: t_name,
                                                       belonging: belonging)

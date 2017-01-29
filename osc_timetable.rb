@@ -70,7 +70,7 @@ Plugin.create(:osc_timetable) do
       end
       timetable.lectures.next { |lectures|
         timeline(:"osc_lectures_#{timetable.uri}") << lectures
-      }
+      }.trap{|err| error err }
     end
   end
 end
